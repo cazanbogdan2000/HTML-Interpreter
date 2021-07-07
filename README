@@ -1,0 +1,96 @@
+                    CAZAN BOGDAN MARIAN 313CB
+                            TEMA 3 SD
+
+CODUL SI README-UL AU FOST REALIZATE CU O IDENTARE DE 4 SPATII
+
+    Scopul acestei teme a constat in implementarea unui program care aplica
+o serie de comenzi asupra unui cod HTML, cod care nu este neaparat bine
+formatat (de exemplu, poate fi indentat incorect sau chiar deloc indentat,
+tot codul fiind scris pe un singur rand).
+
+    Pentru realizarea acestei teme, am avut nevoie de multe functii, si de a
+separa toata cerinta problemei pe mai multe niveluri. In continuare, vom
+prezenta, in mare, fiecare etapa care a ajutat la finalizarea temei.
+    De asemenea, pentru facilizarea apelului de functii, precum si pentru o mai
+buna organizare a tuturor dateleor din cadrul programului, am implementat o
+structura de tipul programData, care poate fi gasita in fisierul header lib.h,
+iar variabila care retine toate datele din cadrul acestui camp se numeste,
+sugestiv, program_data.
+
+            Construirea arborelui
+    
+    Pentru realizarea acestei parti, ne-am folosit aproape in totalitate de
+scheletul de cod primit, precum si de indicatiile primite, sub forma de
+comentarii, in cadrul fisierului Interpret.c.
+    Fisierul unde se pot gasi toate functiile care au ajutat la realizarea
+arborelui este ConstructTree.c (impreuna cu headerul sau, ConstructTree.h).
+    In mare, aici avem functii care prezinta numele tuturor starilor din cadrul
+structurii ParseState, fiecare functie respectand indicatiile pe care le-am 
+primit sub forma de comentarii in cadrul fisierului Interpret.c.
+
+    De asemenea, trebuie mentionat si fisierul tree.c, cu header-ul sau tree.h,
+fisier care contine o gama larga de functii care opereaza atat pe noduri, cum
+ar fi alocarea unui nod, gasirea unui nod dupa id, dar si stergerea unui nod,
+precum si pe elementele din cadrul unui nod, cum ar fi listele de atribute,
+fi ele style sau otherAttributes, sau capmul contents.
+
+    S-a realizat astfel parsarea intregului fisier cod html, caracter cu
+caracter, fiind astfel interpretat fiecare caracter si format arborele de
+taguri html.
+
+
+            Operatiile/Comenzile ce actioneaza pe arbore/nodurile acestuia
+
+        FORMAT
+    Aceasta comanda realizeaza afisarea identata corespunzator a intregului
+cod html. Pentru realizarea acesteia, am folosit functii create separat de
+printare: spre exemplu, avem functie de printare pentru un tag de tip self
+closing, dar si pentru un tag care nu este de tip self closing.
+    Pentru a evita folosirea recursivitatii (pentru ca, pe viitor, fisierele
+html pot fi mult mai vari fata de cele avute in cadrul temei), cu scopul de a
+evita posibile Stack Overflow-uri, am folosit o structura de tipul unei stive,
+in care retineam, in cazul in care un tag nu era de tipul self closing,
+"sfarsitul" tagului, urmand ca mai apoi sa fie afisat la inchiderea definitiva
+a tagului respectiv.
+
+        ADD
+    Operatia de adaugare nu a prezentat o greutate prea mare, ceea ce am facut
+nefiind altceva decat a introduce in cadrul arborelui un nou nod, gasind tatal
+nodului ce trebuia adaugat si, in cazul in care acesta exista, se adauga nodul,
+impreuna cu elementele sale de la contents si restul, altfel, daca parintele nu
+exista, se afisa un mesaj specific.
+
+
+    Ultimele 3 comenzi depindeau si de cei 6 selectori primiti, fapt care a
+condus la crearea mai multor functii, in special pentru "depistarea" nodurilor
+care sa respecte conditiile impuse de selectori. Prin urmare, in cele ce vor
+urma, nu vom mai descrie fiecare functie dupa selectorul ei, intrucat selectorii
+nu reprezinta altceva decat o parcurgere BFS si compararea unor nume de taguri,
+de atribute sau de tipuri de clase. Vom discuta strict despre comenzile date,
+adica appendStyle, overrideStyle, si deleteRecursively.
+
+        APPEND_STYLE
+    In cadrul acestei functii, vom obtine din cadrul sirului de style-ulri
+cate un atribut si apoi, prin parcurgerea listei initiale de elemente, vom
+vedea daca deja exista acel atribut, si, in cazul acesta exista, atunci se
+va actualiza cu valoarea din cadrul acestui camp, altfel se va crea un nou
+atribut, cu numele si cu valoarea respectiva, dupa care se va adauga la sfarsitul
+listei de atribute de tip style.
+
+        OVERRIDE_STYLE
+    Nu este mare diferenta intre aceasta comanda si intre cea de append, 
+singurul lucru pe care il facem in plus fiind stergerea intregii liste de atribute
+si apoi adaugarea noilor atribute.
+
+        DELETE_RECURSIVELY
+    Aceasta functie realizeaza stergerea recursiva a unui nod care respecta
+conditiile impuse de catre selectori; prin recursivitate se sterg si nodurile
+descendente acestui nod. Intrucat nodurile poseda un anumit id, dupa stergerea
+unui nod, nodurile care se aflau in cadrul campului nextSibling, precum si 
+urmasii fiecarui astfel de nod, vor avea id-ul schimbat. Acest lucru s-a realizat
+prin shimbarea initial a id-urilor care sunt "vecini" cu nodul eliminat, apoi
+s-au format noile id-uri pentru fiecare nod in parte.
+
+    Ca o remarca, functia de stergere a unui subarbore a folosit si pentru
+stergrea intregului arbore, la final de tot, facand astfel posibila lipsa
+de memory leak-uri.
